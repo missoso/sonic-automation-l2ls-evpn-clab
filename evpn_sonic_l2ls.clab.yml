@@ -1,0 +1,62 @@
+# Licensed under the BSD 3-Clause License.
+# SPDX-License-Identifier: BSD-3-Clause
+
+name: evpn_sonic_l2ls
+prefix: ""
+
+mgmt:
+  network: evpn_sonic_l2ls
+  ipv4-subnet: 172.80.80.0/24
+
+topology:
+  defaults:
+    kind: nokia_srlinux
+
+  kinds:
+    nokia_srlinux:
+      image: ghcr.io/nokia/srlinux:24.10.1
+      type: ixr-d2l
+    linux:
+      image: ghcr.io/srl-labs/network-multitool
+
+  nodes:
+    ### SPINES ###
+    spine1:
+      type: ixr-d3l
+      group: spine
+      startup-config: configs/spine1.cfg
+      mgmt-ipv4: 172.80.80.21
+    ### LEAFS ###
+    leaf1:
+      kind: sonic-vm
+      image: vrnetlab/sonic_sonic-vs:202411
+      mgmt-ipv4: 172.80.80.11
+      group: leaf
+    leaf2:
+      startup-config: configs/leaf2-srl.cfg
+      mgmt-ipv4: 172.80.80.12
+      group: leaf
+    ### CLIENTS ###
+    client1:
+      kind: linux
+      exec:
+        - ip link set eth0 down
+        - ip address add 172.17.1.1/24 dev eth1
+        - ip route add 0.0.0.0/0 via 172.17.1.254
+      mgmt-ipv4: 172.80.80.32
+      group: server
+    client2:
+      kind: linux
+      mgmt-ipv4: 172.80.80.33
+      exec:
+        - ip link set eth0 down
+        - ip address add 172.17.1.2/24 dev eth1
+        - ip route add 0.0.0.0/0 via 172.17.2.254
+      group: server
+    
+  links:
+    - endpoints: ["spine1:e1-1", "leaf1:eth1"] # eth1 maps to Ethernet0
+    - endpoints: ["spine1:e1-2", "leaf2:e1-49"]
+    - endpoints: ["client1:eth1", "leaf1:eth2"] # eth2 maps to Ethernet4
+    - endpoints: ["client2:eth1", "leaf2:e1-1"]
+    
