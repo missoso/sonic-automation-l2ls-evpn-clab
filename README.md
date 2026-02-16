@@ -173,7 +173,7 @@ Handles system state, interfaces, and basic BGP globals.
 
 **Key JSON Snippets:**
 
-After all the changes have been applied the end result should match the file [`configs/leaf1_final_result.json`](./leaf1_final_result.json):
+After all the changes have been applied the end result should match the file [`configs/leaf1_final_result.json`](./configs/leaf1_final_result.json):
 
 ```json
     "BGP_DEVICE_GLOBAL": {
