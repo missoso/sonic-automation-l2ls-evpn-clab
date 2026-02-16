@@ -23,7 +23,7 @@ To deploy the lab you will required have [Containerlab](https://containerlab.dev
 
 Additionally you will require a SONiC image that can be run in ContainerLab, if you don't have one this [repository](https://github.com/missoso/sonic-l2ls-evpn-containerlab?tab=readme-ov-file#%EF%B8%8F-prerequisites--image-setup) details step by step how to build one.
 
-The automation will be deployed using [Python3](https://www.python.org/downloads/) that use the [Paramiko](https://www.paramiko.org/) package for the SSH connection and will apply changes to the SONiC switch using the [sonic-swss-common](https://github.com/sonic-net/sonic-swss-common) (SWitch State Service Common Library)package.
+The automation will be deployed using [Python3](https://www.python.org/downloads/) using the [Paramiko](https://www.paramiko.org/) package for the SSH connection. The python script will invoke methods that require a SONiC image with the [sonic-swss-common](https://github.com/sonic-net/sonic-swss-common) (Switch State Service Common Library) package which should be part of the image, if not follow the link for installation instructions.
 
 ## 🚀 Deployment & Quick Start
 
