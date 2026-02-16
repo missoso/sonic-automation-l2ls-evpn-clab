@@ -79,7 +79,7 @@ Unlike SR Linux, SONiC needs post-boot configuration.
 
 **Step A: Apply a baseline System Configuration (JSON)**
 
-This step deploys the actions specific in the script [`deploy_sonic_baseline_cfg.sh`](./deploy_sonic_baseline_cfg.sh).
+This step deploys the actions specified in the script [`deploy_sonic_baseline_cfg.sh`](./deploy_sonic_baseline_cfg.sh).
 
 *What this does:*
 1. Copies [`configs/leaf1-config_baseline.json`](./configs/leaf1-config_baseline.json)to the host.
