@@ -1,13 +1,9 @@
 # SONiC Automation (l2ls-evpn clab)
 
 > [!NOTE]
-> The key goal of this repository is to explore how to automate a SONiC devide that is running BGP and part of an EVPN L2 deployment. The focus is on the automation component and not really on the EVPN deployment, reason why such deployment is very simplistic
-
-This repository contains a Containerlab topology to demonstrate EVPN L2LS interoperability between **SONiC** and **Nokia SR Linux**, however, the key goal is to ep
+> The key goal of this repository is to explore how to automate a SONiC devide that is running BGP and part of an EVPN L2 deployment. The focus is on the automation component and not really on the EVPN deployment, reason why such deployment is very simplistic. The EVPN component itself is an EVPN L2LS interoperability scenario between **SONiC** and **Nokia SR Linux**.
 
 ## 📋 Overview
-
-The purpose of this repository is showing how to create a SONiC image to be used in a container lab setup and the configuration required at both the SONiC JSON and FRR/BGP levels to deploy a simple EVPN layer 2 service.
 
 This lab simulates a small Data Center fabric with:
 - **Spine:** Nokia SR Linux
@@ -83,13 +79,16 @@ Unlike SR Linux, SONiC needs post-boot configuration.
 
 **Step A: Apply a baseline System Configuration (JSON)**
 
+This step deploys the actions specific in the script [`deploy_sonic_baseline_cfg.sh`](./deploy_sonic_baseline_cfg.sh).
+
+*What this does:*
+1. Copies [`configs/leaf1-config_baseline.json`](./configs/leaf1-config_baseline.json)to the host.
+2. Replaces `/etc/sonic/config_db.json` in the SONiC switch
+3. Reloads configuration (`sudo config reload -y`).
+
 ```bash
 sh deploy_sonic_baseline_cfg.sh
 ```
-*What this does:*
-1. Copies `configs/leaf1-config_baseline.json` to the host.
-2. Replaces `/etc/sonic/config_db.json`.
-3. Reloads configuration (`sudo config reload -y`).
 
 The contents of the leaf1-config_baseline.json are to simulate a box without any BGP or interface layer 3 configuraiton, the reason why this step is required is that many SONiC images have startup configurations files that include some baseline BGP and/or interfaces configuration. Removing them ensures that the SONiC device protocols and interfaces need to be configured from scratch.
 
@@ -122,17 +121,26 @@ A second variant of the script is To perform this step we will use the script [`
 
 **Step C: Apply Routing Configuration (FRR)**
 
-There is no Python package to automate the deployment of the FRR component, so here the mehotd used is a script whcih performs SSH and then paste cBGP/EVPN ommands into the `vtysh` CLI
+There is no Python package to automate the deployment of the FRR component, so here the mehotd used is the script [`deploy_bgp_vtysh.sh`](./deploy_bgp_vtysh.sh) whcih performs SSH and then paste cBGP/EVPN ommands into the `vtysh` CLI
 
 ```bash
-./deploy_bgp_vtysh.sh
+sh deploy_bgp_vtysh.sh
+```
+
+**Step D: Populate ARP tables (FRR)**
+
+Run the script [`pings.sh`](./pings.sh) to peform pings between the hosts 
+
+```bash
+sh pings.sh
 ```
 
 ### 3. Summary of Deployment Steps
 1.  Deploy containerlab.
-2.  Run `deploy_sonic_cfg.sh` (Updates JSON).
-3.  Run `deploy_bgp_vtysh.sh` (Updates FRR).
-4.  Run `pings.sh` (Populates ARP and verifies).
+2.  Run [`deploy_sonic_baseline_cfg.sh`](./deploy_sonic_baseline_cfg.sh) (Updates JSON to simulate "factory reset").
+3.  Run [`deploy_sonic_setup.py`](./deploy_sonic_setup.py) to add interfaces, VXLAN and BGP baseline configuration liek router ID and AS number to SONiC
+4.  Run [`deploy_bgp_vtysh.sh`](./deploy_bgp_vtysh.sh) to deploy the FRR component
+5.  Run [`pings.sh`](./pings.sh) (Populates ARP and verifies).
 
 ## 🧠 Deep Dive: SONiC Configuration & Architecture
 
