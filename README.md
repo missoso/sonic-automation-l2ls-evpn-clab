@@ -1,7 +1,7 @@
 # SONiC Automation (l2ls-evpn clab)
 
 > [!NOTE]
-> The key goal of this repository is to explore how to automate a SONiC devide that is running BGP and part of an EVPN L2 deployment. The focus is on the automation component and not really on the EVPN deployment, reason why such deployment is very simplistic. The EVPN component itself is an EVPN L2LS interoperability scenario between **SONiC** and **Nokia SR Linux**.
+> The key goal of this repository is to explore how to automate a SONiC device that is running BGP and part of an EVPN L2 deployment. The focus is on the automation component and not really on the EVPN deployment, reason why such deployment is very simplistic. The EVPN component itself is an EVPN L2LS interoperability scenario between **SONiC** and **Nokia SR Linux**.
 
 ## 📋 Overview
 
@@ -21,7 +21,7 @@ The goal is to establish L2 EVPN connectivity between Client 1 (connected to SON
 
 To deploy the lab you will required have [Containerlab](https://containerlab.dev/install/) and [Docker](https://docs.docker.com/engine/install/) installed.
 
-Aditionally you will require a SONiC image that can be run in ContainerLab, if you don't have one this [repository](https://github.com/missoso/sonic-l2ls-evpn-containerlab?tab=readme-ov-file#%EF%B8%8F-prerequisites--image-setup) details step by step how to build one.
+Additionally you will require a SONiC image that can be run in ContainerLab, if you don't have one this [repository](https://github.com/missoso/sonic-l2ls-evpn-containerlab?tab=readme-ov-file#%EF%B8%8F-prerequisites--image-setup) details step by step how to build one.
 
 The automation will be deployed using [Python3](https://www.python.org/downloads/) that use the [Paramiko](https://www.paramiko.org/) package for the SSH connection and will apply changes to the SONiC switch using the [sonic-swss-common](https://github.com/sonic-net/sonic-swss-common) (SWitch State Service Common Library)package.
 
@@ -102,7 +102,7 @@ python3 deploy_sonic_setup.py
 
 The above script communicates with the SONiC host via SSH and uses the sonic-swss-common package to change the SONiC switch configuration. 
 
-The advantage is besides being able to use try/catch python logic when building the provisionign workflow it also allows access to methods that interact directly with the switch configuration as opposed of just copy/pasting commands into the CLI (which is what we will need to do for the FRR component)
+The advantage is besides being able to use try/catch python logic when building the provisioning workflow it also allows access to methods that interact directly with the switch configuration as opposed of just copy/pasting commands into the CLI (which is what we will need to do for the FRR component)
 
 Example: 
 ```bash
@@ -116,12 +116,12 @@ Example:
         config_db.set_entry('LOOPBACK_INTERFACE', 'Loopback0|{LOOPBACK0_IP}', {{}})
 ```
 
-A second variant of the script is To perform this step we will use the script [`deploy_sonic_setup_with_config_save.py`](./deploy_sonic_setup_with_config_save.py), the sole diffence is that this one will perform an "sudo config save -y" which saves the CONFIG_DB to config_db.json, similar to a copy of the running configuration into the startup configuration
+A second variant of the script is To perform this step we will use the script [`deploy_sonic_setup_with_config_save.py`](./deploy_sonic_setup_with_config_save.py), the sole difference is that it will perform a "sudo config save -y" which saves the CONFIG_DB to config_db.json, similar to a copy of the running configuration into the startup configuration
 
 
 **Step C: Apply Routing Configuration (FRR)**
 
-There is no Python package to automate the deployment of the FRR component, so here the mehotd used is the script [`deploy_bgp_vtysh.sh`](./deploy_bgp_vtysh.sh) whcih performs SSH and then paste cBGP/EVPN ommands into the `vtysh` CLI
+There is no Python package to automate the deployment of the FRR component, so here the method used is the script [`deploy_bgp_vtysh.sh`](./deploy_bgp_vtysh.sh) which performs SSH and then paste BGP/EVPN commands into the `vtysh` CLI
 
 ```bash
 sh deploy_bgp_vtysh.sh
@@ -129,7 +129,7 @@ sh deploy_bgp_vtysh.sh
 
 **Step D: Populate ARP tables (FRR)**
 
-Run the script [`pings.sh`](./pings.sh) to peform pings between the hosts 
+Run the script [`pings.sh`](./pings.sh) to perform pings between the hosts 
 
 ```bash
 sh pings.sh
