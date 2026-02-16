@@ -138,7 +138,7 @@ sh pings.sh
 ### 3. Summary of Deployment Steps
 1.  Deploy containerlab.
 2.  Run [`deploy_sonic_baseline_cfg.sh`](./deploy_sonic_baseline_cfg.sh) (Updates JSON to simulate "factory reset").
-3.  Run [`deploy_sonic_setup.py`](./deploy_sonic_setup.py) to add interfaces, VXLAN and BGP baseline configuration liek router ID and AS number to SONiC
+3.  Run [`deploy_sonic_setup.py`](./deploy_sonic_setup.py) to add interfaces, VXLAN and BGP baseline configuration like router ID and AS number to the SONiC switch
 4.  Run [`deploy_bgp_vtysh.sh`](./deploy_bgp_vtysh.sh) to deploy the FRR component
 5.  Run [`pings.sh`](./pings.sh) (Populates ARP and verifies).
 
