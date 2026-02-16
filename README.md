@@ -173,7 +173,8 @@ Handles system state, interfaces, and basic BGP globals.
 
 **Key JSON Snippets:**
 
-*Global BGP Settings:*
+After all the changes have been applied the end result should match the file [`configs/leaf1_final_result.json`](./leaf1_final_result.json):
+
 ```json
     "BGP_DEVICE_GLOBAL": {
         "STATE": {
@@ -184,26 +185,54 @@ Handles system state, interfaces, and basic BGP globals.
     },
     "BGP_GLOBALS": {
         "default": {
-            "default_ipv4_unicast": "true",
-            "local_asn": "101",
-            "router_id": "10.0.1.1"
+            "local_asn": "101"
+        }
+    },
+
+    "DEVICE_METADATA": {
+        "localhost": {
+            "bgp_asn": "101",
+
+    "INTERFACE": {
+        "Ethernet0": {},
+        "Ethernet0|192.168.11.0/31": {},
+        "Ethernet12": {},
+        "Ethernet16": {},
+        "Ethernet20": {},
+        "Ethernet24": {}
+    },
+
+
+    "LOOPBACK_INTERFACE": {
+        "Loopback0": {},
+        "Loopback0|10.0.1.1/32": {}
+    },
+
+    "VLAN": {
+        "Vlan100": {
+            "vlanid": "100"
+        }
+    },
+    "VLAN_MEMBER": {
+        "Vlan100|Ethernet4": {
+            "tagging_mode": "untagged"
+        }
+    },
+    "VXLAN_TUNNEL": {
+        "vtep": {
+            "src_ip": "10.0.1.1"
+        }
+    },
+    "VXLAN_TUNNEL_MAP": {
+        "vtep|map_100": {
+            "vlan": "Vlan100",
+            "vni": "100"
         }
     }
 ```
 
-*Device Metadata:*
-```json
-    "DEVICE_METADATA": {
-        "localhost": {
-            "bgp_asn": "101",
-            "hostname": "sonic",
-            "hwsku": "Force10-S6000",
-            "mac": "22:d1:c7:63:8f:4a",
-            "platform": "x86_64-kvm_x86_64-r0",
-            "type": "LeafRouter"
-        }
-    }
-```
+TTTTTTTTT
+
 
 > [!NOTE]
 > The [SONiC Configuration Wiki](https://github.com/sonic-net/SONiC/wiki/Configuration) provides insights, but there is no single complete schema definition.
