@@ -42,7 +42,7 @@ Before deploying check if the SONiC image planned to be used matches the one spe
 To deploy the lab:
 
 ```bash
-sudo containerlab deploy --reconfigure
+containerlab deploy -t evpn_sonic_l2ls.clab.yml --reconfigure
 ```
 
 ```bash
@@ -319,5 +319,5 @@ Route Distinguisher: 10.0.1.2:100
 To stop the lab and remove all containers:
 
 ```bash
-sudo containerlab destroy -t evpn_sonic_l2ls.clab.yml --cleanup
+containerlab destroy -t evpn_sonic_l2ls.clab.yml --cleanup
 ```
