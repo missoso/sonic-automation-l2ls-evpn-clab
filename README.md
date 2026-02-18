@@ -121,11 +121,14 @@ A second variant of the script is To perform this step we will use the script [`
 
 **Step C: Apply Routing Configuration (FRR)**
 
-There is no Python package to automate the deployment of the FRR component, so here the method used is the script [`deploy_bgp_vtysh.sh`](./deploy_bgp_vtysh.sh) which performs SSH and then paste BGP/EVPN commands into the `vtysh` CLI
+FRR has a Python library called vtysh that allows programmatic access, there is also There is no Python package to automate the deployment of the FRR component, so here the method used is the script [`deploy_bgp_vtysh.sh`](./deploy_bgp_vtysh.sh) which performs SSH and then paste BGP/EVPN commands into the `vtysh` CLI
 
 ```bash
-sh deploy_bgp_vtysh.sh
+python3 deploy_frr_config.py
 ```
+
+> [!NOTE]
+> There are other options including a more "modern" gRPC API access, however, at the time of building this repository the FRRouting version is 10.0.1, which is still considered at experimental level (it is not even enbaled by default)
 
 **Step D: Populate ARP tables (FRR)**
 
