@@ -25,6 +25,11 @@ Additionally you will require a SONiC image that can be run in ContainerLab, if 
 
 The automation will be deployed using [Python3](https://www.python.org/downloads/) using the [Paramiko](https://www.paramiko.org/) package for the SSH connection. The python script will invoke methods that require a SONiC image with the [sonic-swss-common](https://github.com/sonic-net/sonic-swss-common) (Switch State Service Common Library) package which should be part of the image, if not follow the link for installation instructions.
 
+There are also some python scripts build to perform some basic testing, whchich require [pytest](https://pypi.org/project/pytest/)
+
+> [!NOTE]
+> In SONiC there is support for GNMI, however, there isn't a complete YANG data model so the amount of configuration and testing that can be achieved using GNMI GET/SET is very limited, hence the usage of python 
+
 ## 🚀 Deployment & Quick Start
 
 ### 1. Deploy the Topology
@@ -234,7 +239,6 @@ After all the changes have been applied the end result should match the file [`c
     }
 ```
 
-TTTTTTTTT
 
 
 > [!NOTE]
@@ -316,6 +320,65 @@ Route Distinguisher: 10.0.1.2:100
                     10.0.1.2                      100      0 100 201 i
                     RT:65000:100 ET:8
 ```
+
+### 3. Automation for state validation 
+
+> [!NOTE]
+> The usage of pytest relies heavily in executing commands in VTYSH and then process the standard or JSON output. This makes these scripts prone to have to be changed or adapted depending on the FRR version. As previsouly described there is GNMI support but no wide coverage YANG model and because this is FRR it is not covered by the [sonic-swss-common](https://github.com/sonic-net/sonic-swss-common) (Switch State Service Common Library)
+
+
+The python scripts [`test_bgp_sonic.py`](./test_bgp_sonic.py) and [`test_bgp_prefixes_sonic.py`](./test_bgp_prefixes_sonic.py) allow to test if the BGP sessions are _Established_ and if there are prefixes being sent and received to/from the iBGP route reflector
+
+Ensure the ARP tables are populated
+```bash
+./pings.sh
+```
+
+Check the status of the BGP adjacencies
+```bash
+pytest test_bgp_sonic.py -v -s
+```
+The output should look similar to this:
+```bash
+============================================ test session starts =============================================
+platform linux -- Python 3.10.12, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/nokia/sonic-automation-l2ls-evpn-clab
+collected 2 items                                                                                            
+
+test_bgp_sonic.py::test_bgp_neighbor_established[192.168.11.1] 
+ BGP neighbour = 192.168.11.1 , State = Established
+PASSED
+test_bgp_sonic.py::test_bgp_neighbor_established[10.0.2.1] 
+ BGP neighbour = 10.0.2.1 , State = Established
+PASSED
+
+============================================= 2 passed in 0.96s ==============================================
+```
+
+Check the amount of prefixes advertised/received
+```bash
+pytest test_bgp_prefixes_sonic.py -v -s
+```
+
+The output should look similar to this:
+```bash
+============================================ test session starts =============================================
+platform linux -- Python 3.10.12, pytest-9.0.2, pluggy-1.6.0 -- /usr/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/nokia/sonic-automation-l2ls-evpn-clab
+collected 2 items                                                                                            
+
+test_bgp_prefixes_sonic.py::test_bgp_prefixes_received 
+ BGP neighbour = 10.0.2.1 , Prefixes Received = 2
+PASSED
+test_bgp_prefixes_sonic.py::test_bgp_prefixes_advertised 
+ BGP neighbour = 10.0.2.1 , Prefixes Advertised = 4
+PASSED
+
+============================================= 2 passed in 1.42s ==============================================
+```
+
 
 ## 🧹 Cleanup
 
